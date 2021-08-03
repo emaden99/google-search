@@ -1,5 +1,4 @@
 import "../../App.css";
-import { Input, InputGroup } from "reactstrap";
 import React from "react";
 import { useState, useEffect } from "react";
 
@@ -11,141 +10,61 @@ function Main() {
     if (s.length === 0) {
       setResults([]);
     } else {
-      setResults(
-        data.filter((item) => item.toLowerCase().includes(s.toLowerCase()))
-      );
+      fetch("/fetch")
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          }
+        })
+        .then((jsonResponse) =>
+          setResults(
+            Object.values(jsonResponse).filter((item) =>
+              item.toLowerCase().includes(s.toLowerCase())
+            )
+          )
+        );
     }
   }, [search]);
-  const data = [
-    "Ezgi Maden",
-    "Inez Morin",
-    "Emmanuel Brennan",
-    "Hilel Williams",
-    "Leonard Rush",
-    "Ross Gilliam",
-    "Ashton White",
-    "Chastity Floyd",
-    "Cyrus Terry",
-    "Cyrus Blair",
-    "Ferris Fox",
-    "Yen Hines",
-    "Vance Evans",
-    "Daryl Cross",
-    "Colorado Little",
-    "Hiroko Powell",
-    "Kellie Watts",
-    "Ian Kinney",
-    "Brendan Orr",
-    "Desiree Sears",
-    "Ali Riddle",
-    "Hedwig Stanley",
-    "Philip Hines",
-    "Armand Lang",
-    "Freya Conley",
-    "Maya Tucker",
-    "Tarik Hunt",
-    "Uma Fry",
-    "Dorian Valdez",
-    "Walter Molina",
-    "Signe Mcmillan",
-    "Fleur Morales",
-    "Shelby Ware",
-    "Connor Gallegos",
-    "Patricia Bonner",
-    "Travis Buckley",
-    "Andrew Glover",
-    "Chaim Glass",
-    "Armando Klein",
-    "Blythe Black",
-    "Wilma Todd",
-    "Octavius Parks",
-    "Jameson Mckee",
-    "Renee Fletcher",
-    "Clinton Leonard",
-    "Zeus Bruce",
-    "Maite Phelps",
-    "Ira Ortiz",
-    "Baxter Bradshaw",
-    "Malik Pope",
-    "Dakota Melendez",
-    "Daryl Hooper",
-    "Idola Kline",
-    "Emery Rasmussen",
-    "Sarah Wood",
-    "Ariel Dyer",
-    "Keely Simmons",
-    "Burke Odonnell",
-    "Sonya Atkinson",
-    "Roary Lewis",
-    "Buckminster Stein",
-    "Jeremy Nelson",
-    "Philip Curry",
-    "Octavia Austin",
-    "Savannah Johns",
-    "Sara Bradley",
-    "Cody Holcomb",
-    "Ishmael William",
-    "Unity Sexton",
-    "Kaden Mckee",
-    "Mark Alvarez",
-    "Jenette Bray",
-    "Sylvester Hahn",
-    "Michael Hall",
-    "Leigh Martin",
-    "Magee Gray",
-    "Magee Howe",
-    "Steven Chang",
-    "Uma Porter",
-    "Adele Sweeney",
-    "Neve Whitney",
-    "Josiah Cook",
-    "Rajah Hahn",
-    "Kristen Hunter",
-    "Alan Lancaster",
-    "Marshall Hopkins",
-    "Jolie Carrillo",
-    "Xander Cummings",
-    "Abraham Schroeder",
-    "Yvette Dale",
-    "Wesley Greene",
-    "Clementine Deleon",
-    "Velma Church",
-    "Nell Holcomb",
-    "Aaron Talley",
-    "Helen Holcomb",
-    "Shaeleigh Vazquez",
-    "Alexandra Mcmahon",
-    "Urielle Downs",
-    "Avye Jarvis",
-    "Germane Vance",
-  ];
+
+  const enterPressed = (e) => {
+    if (e.keyCode === 13) setSearch(e.target.getAttribute("data"));
+  };
 
   return (
-    <div>
-      <div className="mainContainer d-flex flex-column align-items-center ">
-        <img
-          className="brand"
-          width="290"
-          alt="google"
-          height="98"
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/1200px-Google_2015_logo.svg.png"
-        ></img>
-        <InputGroup className="w-75 mt-4 roundManually">
-          <Input
-            onChange={(event) => setSearch(event.target.value)}
-            value={search}
-            type="text"
-            className="roundManually"
-          />
-        </InputGroup>
-      </div>
-      <div>
-        {results && (
-          <div className="search-results ">
-            {results.map((item) => (
-              <div className="results-item mt-3 " key={item}>
-                {item}
-              </div>
+    <div className="mainContainer d-flex flex-column align-items-center ">
+      <img
+        className="brand"
+        width="290"
+        alt="google"
+        height="98"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/1200px-Google_2015_logo.svg.png"
+      ></img>
+      <div className="searchContainer mt-4">
+        <input
+          className=" roundManually"
+          key="inpsearch"
+          onChange={(event) => {
+            setSearch(event.target.value);
+          }}
+          value={search}
+          type="text"
+        />
+
+        {results.length > 0 && (
+          <div>
+            {results.map((item, ind) => (
+              <ul id="results-list" key={item}>
+                <li
+                  className="results-item mt-3"
+                  onKeyUp={enterPressed}
+                  onClick={(e) => setSearch(e.target.getAttribute("data"))}
+                  tabIndex={1}
+                  data={item}
+                  value={ind + 1}
+                >
+                  {item}
+                </li>
+              </ul>
             ))}
           </div>
         )}
